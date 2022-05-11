@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "toptal-quizz-app",
+  "private_key_id": "8dfb29ac18cfa184c09c7bf66a3d742113bd792b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCzFrzNbnTd9tc6\nYj4dxazNVvnoJH4slDM1ESBuQ3COpPUYbkSJcnDA7N4gGh3upDjUlVNiK2pgpiF0\nCHy+3OE0FHiKkXHWSFrlaec1nHnYqF+/y4yMEtD3CtIKWD3cRSWMYqS9syp7PdoQ\nfXZelmrE+0VDMnWcLO8U/0C3QiYfcIm/gqaas442sc4Aa/0UA0dDEoXFjHRVbRzm\nWpcXG8OVH7YhVO41G/OC+Saf2MGYnzxVjUoU+DOjPfxbSx8GWZTzgVSB3mJ8J1BC\nL4cR8R7rljg64pyYtHXpNuupNMFJifrMNZE3P5m0fYObAceFtFVgds+z/nu8jjfa\n4Tm+kZElAgMBAAECggEAK7fUvjeFKvxLnTKHZGAxp2zgk9V4wawp9f3o01H+Q6ws\nMtsUOxNnSAlqzh5iCTQotWiAkvnzPYXAq+E4hqVICp0msfkAd6VxHwjjytgYfJXZ\nzenENRuQzIXlMWZKL5/noyYffjmjGLPILHdcMon4pX6LcXR7dnUXpiILq9DnmovG\nfq+Q4e5jnaLsg/tG10Tu2S9IKS74a3Re8hEoNNHGx9HB/2LHO3le/MyJmmNuOw6B\n8gZRy0ejBunt0zrNDHogt4u+wCJQv+/6eXb0IWXPhh958/WziZb48/OFKnI2t9r4\nNReW/dwj7cEC86C2se47F5siaQipBJJRsIJs2w65LwKBgQDz7fdbaaM34F8fMCgN\nFzDI8lobm5r6mR7nhqyjQEKSjDX6SUxloczdco+wpJBdpKZESH5dwdBdBVdoFY0d\nD8PbVlPk5lHD8mZiHeHwR5bNXBPwiCKPKsmeuJr7EzGW7vzuDFHSuc/2SWdmneLp\nZLG+IQHNrNQcSbdMCgBF8xHLzwKBgQC782LllxXE3f22ZEpjjsR9f1KZgTzCzLPP\nxfGFv9KQuOWbugCJ8pBv2pMTB4whgco+meIdJND+SKEg/LF/f6B7oyuv4zgNn90y\nw+ESxb7NIA72y7Gu40nG3I/K83R+UgsNd/lgdT2/wjcrRp7uN1VZpxhb5dE4O7Nz\nHIIKpTTMywKBgQDRQGZdiLV3jYaMHqd881PqTdx2qnm8V/Zm7uTR9qIlTRpQ5uge\nlzpDDa+t/L3LVx86nGWq0ESKR7a/lx1CvO9rDRdS2TFzQlIKAVB86yy2ZjLEuEPN\nRQtImVx53fFAZSucmfznJHb98+I76V1qkfLYA0Cky4n56lLPbBTn7KhriQKBgEDk\nGDoSftaYmnc1iyVybk6x/e+32iWbjV1oBypZfzauT8ADaRo3oDyuJ2dDjNMov437\njUDorCuPIeqEtDfD9cGaJYQ1m+3ASxuy22ui0Gx77A6zZyZtnNRG5HJ6uba/VseQ\nq43tDKO/R1LusAKpIhOxCEz6PNEAc8WDizZnsaIfAoGARO0X7CmR+9gYm7cWAAzI\nnAjCpS9tXPdiG/sjFrg5myZn1JuG3aLHPgaXz2FltwMv97jZ60o+8aA3i3pZP0E0\nhmwNnha3dVsvOOQhHEK6o86y8qTnt158QWmQkqy07X9qmcoAVqBRSlVXi7/TkzMx\nWa3igAbqcFI0cY7TYwHUnx8=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-qjcos@toptal-quizz-app.iam.gserviceaccount.com",
+  "client_id": "101655476690947735691",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-qjcos%40toptal-quizz-app.iam.gserviceaccount.com"
+}
