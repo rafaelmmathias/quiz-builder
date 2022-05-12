@@ -2,6 +2,7 @@ import { RequestHandler } from "express";
 import { pick } from "lodash";
 import { Quiz } from "../models/quiz";
 import {
+  checkAnswers,
   createQuiz,
   getQuizByPermalinkId,
   getQuizzesByEmail,
@@ -10,6 +11,7 @@ import {
 import { Timestamp } from "firebase-admin/firestore";
 import { generatePermalinkId } from "../utils";
 import { QuizNotFoundException } from "../models/errors";
+import { QuizAnswer } from "../services/quiz.service.types";
 
 const listConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
@@ -22,7 +24,10 @@ const listConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
     return {
       ...data,
       createdAt: date.toDate(),
-      choices: data.choices.map((choice) => pick(choice, ["title"])),
+      questions: data.questions?.map((question) => ({
+        ...question,
+        choices: question.choices?.map((choice) => pick(choice, ["title"])),
+      })),
     };
   },
 };
@@ -45,7 +50,11 @@ const createConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
       ...data,
       permalinkId: id,
       createdAt: Timestamp.fromDate(new Date()),
-    };
+      questions: data.questions.map((question) => ({
+        ...question,
+        id: generatePermalinkId(),
+      })),
+    } as Quiz;
   },
   fromFirestore: (snapshot) => snapshot.data() as Quiz,
 };
@@ -80,6 +89,22 @@ export const updateQuizController: RequestHandler = async (req, res, next) => {
     const quiz = req.body as Quiz;
 
     const response = await updateQuiz(user.email, req.params.permalinkId, quiz);
+
+    if (!response) {
+      throw QuizNotFoundException;
+    }
+
+    res.json(response);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getQuizResult: RequestHandler = async (req, res, next) => {
+  try {
+    const quizAnswer = req.body as QuizAnswer;
+
+    const response = await checkAnswers(quizAnswer);
 
     if (!response) {
       throw QuizNotFoundException;

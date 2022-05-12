@@ -5,13 +5,18 @@ export type Choice = {
   isCorrect?: boolean;
 };
 
-export type Quiz = {
+export type Question = {
   id: string;
   title: string;
   choices: Choice[];
+  type: "single" | "multi";
+};
+
+export type Quiz = {
+  title: string;
   published: boolean;
   permalinkId: string;
-  type: "single" | "multi";
   createdAt: Timestamp | Date;
   createdBy: string;
+  questions: Question[];
 };

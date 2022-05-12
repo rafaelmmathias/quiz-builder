@@ -1,4 +1,4 @@
-import { getQuiz, updateQuizController } from "./../controllers/quiz.controller";
+import { getQuiz, getQuizResult, updateQuizController } from "./../controllers/quiz.controller";
 import express from "express";
 import { authorize } from "../middlewares/authorize";
 import { create, get } from "../controllers/quiz.controller";
@@ -9,3 +9,4 @@ quizRouter.get("/quiz", authorize, get);
 quizRouter.get("/quiz/:permalinkId", getQuiz);
 quizRouter.put("/quiz/:permalinkId", authorize, updateQuizController);
 quizRouter.post("/quiz", authorize, create);
+quizRouter.post("/quiz/checkResult", getQuizResult);

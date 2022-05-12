@@ -1,10 +1,16 @@
-import { ForbiddenException, QuizAlreadyPublishedException, QuizNotFoundException } from "../models/errors";
+import {
+  ForbiddenException,
+  QuizAlreadyPublishedException,
+  QuizNotFoundException,
+} from "../models/errors";
 
 import { firestoreAdmin } from "../server";
 import {
+  CheckAnswer,
   CreateQuiz,
   GetQuizByPermalinkId,
   GetQuizzesByEmail,
+  QuizResult,
   UpdateQuiz,
 } from "./quiz.service.types";
 
@@ -68,4 +74,35 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
   }
 
   throw QuizAlreadyPublishedException;
+};
+
+export const checkAnswers: CheckAnswer = async (quizAnswer) => {
+  const quiz = await getQuizByPermalinkId(quizAnswer.permalinkId);
+  if (!quiz) throw QuizNotFoundException;
+  if (!quiz.published) throw ForbiddenException;
+
+  const result = quizAnswer.answers.reduce(
+    (acc, curr) => {
+      const question = quiz.questions.find(
+        (question) => question.id === curr.id
+      );
+      if (question) {
+        const isValidAnswer = question.choices
+          .filter((choice) => choice.isCorrect)
+          .every((choice) => curr.choices.includes(choice.title));
+
+        acc.correct = isValidAnswer ? acc.correct + 1 : acc.correct;
+        acc.wrong = !isValidAnswer ? acc.wrong + 1 : acc.wrong;
+        return acc;
+      }
+
+      return acc;
+    },
+    {
+      correct: 0,
+      wrong: 0,
+    } as QuizResult
+  );
+
+  return result;
 };

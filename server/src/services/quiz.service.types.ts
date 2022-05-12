@@ -22,3 +22,20 @@ export type UpdateQuiz = (
   permalinkId: string,
   quiz: Quiz
 ) => Promise<Quiz>;
+
+type QuestionAnswer = {
+  id: string;
+  choices: string;
+};
+
+export type QuizAnswer = {
+  permalinkId: string;
+  answers: QuestionAnswer[];
+};
+
+export type QuizResult = {
+  correct: number;
+  wrong: number;
+};
+
+export type CheckAnswer = (answer: QuizAnswer) => Promise<QuizResult>;
