@@ -5,9 +5,11 @@ import {
   createQuiz,
   getQuizByPermalinkId,
   getQuizzesByEmail,
+  updateQuiz,
 } from "../services/quiz.service";
 import { Timestamp } from "firebase-admin/firestore";
 import { generatePermalinkId } from "../utils";
+import { QuizNotFoundException } from "../models/errors";
 
 const listConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
@@ -38,7 +40,7 @@ export const get: RequestHandler = async (req, res, next) => {
 const createConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
     const id = generatePermalinkId();
-    console.log(id);
+
     return {
       ...data,
       permalinkId: id,
@@ -62,7 +64,27 @@ export const create: RequestHandler = async (req, res, next) => {
 
 export const getQuiz: RequestHandler = async (req, res, next) => {
   try {
-    const response = await getQuizByPermalinkId(req.params.permalinkId, listConverter);
+    const response = await getQuizByPermalinkId(
+      req.params.permalinkId,
+      listConverter
+    );
+    res.json(response);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateQuizController: RequestHandler = async (req, res, next) => {
+  try {
+    const user = res.locals.user;
+    const quiz = req.body as Quiz;
+
+    const response = await updateQuiz(user.email, req.params.permalinkId, quiz);
+
+    if (!response) {
+      throw QuizNotFoundException;
+    }
+
     res.json(response);
   } catch (err) {
     next(err);

@@ -13,4 +13,5 @@ export type Quiz = {
   permalinkId: string;
   type: "single" | "multi";
   createdAt: Timestamp | Date;
+  createdBy: string;
 };

@@ -1,3 +1,4 @@
+import { string } from "yup";
 import { Quiz } from "../models/quiz";
 
 export type GetQuizzesByEmail = (
@@ -14,4 +15,10 @@ export type CreateQuiz = (
 export type GetQuizByPermalinkId = (
   permalinkId: string,
   converter?: FirebaseFirestore.FirestoreDataConverter<Quiz>
+) => Promise<Quiz>;
+
+export type UpdateQuiz = (
+  email: string,
+  permalinkId: string,
+  quiz: Quiz
 ) => Promise<Quiz>;
