@@ -1,7 +1,11 @@
 import { RequestHandler } from "express";
 import { pick } from "lodash";
 import { Quiz } from "../models/quiz";
-import { createQuiz, getQuizzesByEmail } from "../services/quiz.service";
+import {
+  createQuiz,
+  getQuizByPermalinkId,
+  getQuizzesByEmail,
+} from "../services/quiz.service";
 import { Timestamp } from "firebase-admin/firestore";
 import { generatePermalinkId } from "../utils";
 
@@ -33,7 +37,7 @@ export const get: RequestHandler = async (req, res, next) => {
 
 const createConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
-    const id =  generatePermalinkId();
+    const id = generatePermalinkId();
     console.log(id);
     return {
       ...data,
@@ -50,6 +54,15 @@ export const create: RequestHandler = async (req, res, next) => {
     const quiz = req.body as Quiz;
 
     const response = await createQuiz(user.email, quiz, createConverter);
+    res.json(response);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getQuiz: RequestHandler = async (req, res, next) => {
+  try {
+    const response = await getQuizByPermalinkId(req.params.permalinkId, listConverter);
     res.json(response);
   } catch (err) {
     next(err);

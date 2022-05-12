@@ -10,3 +10,8 @@ export type CreateQuiz = (
   quiz: Quiz,
   converter?: FirebaseFirestore.FirestoreDataConverter<Quiz>
 ) => Promise<Quiz[]>;
+
+export type GetQuizByPermalinkId = (
+  permalinkId: string,
+  converter?: FirebaseFirestore.FirestoreDataConverter<Quiz>
+) => Promise<Quiz>;
