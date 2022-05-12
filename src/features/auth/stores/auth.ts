@@ -54,7 +54,7 @@ export const useAuthStore = create(
         set({ isLoading: true, errorMessage: "" });
 
         const userCredential = await login();
-        console.log("userCredential: ", userCredential);
+
         set({
           isAuthorized: true,
           isLoading: false,

@@ -1,31 +1,57 @@
 import { RequestHandler } from "express";
 import { pick } from "lodash";
 import { Quiz } from "../models/quiz";
-import { adminApp } from "../server";
-import { getQuizzesByEmail } from "../services/quiz.service";
+import { createQuiz, getQuizzesByEmail } from "../services/quiz.service";
+import { Timestamp } from "firebase-admin/firestore";
+import { generatePermalinkId } from "../utils";
 
-const converter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
+const listConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
     return data;
   },
   fromFirestore: (snapshot) => {
-    const data = snapshot.data();
-    return data.quiz.map((question: any) => ({
-      ...question,
-      choices: question.choices.map((choice: any) => pick(choice, ["title"])),
-    }));
+    const data = snapshot.data() as Quiz;
+    const date = data.createdAt as Timestamp;
+
+    return {
+      ...data,
+      createdAt: date.toDate(),
+      choices: data.choices.map((choice) => pick(choice, ["title"])),
+    };
   },
 };
 
 export const get: RequestHandler = async (req, res, next) => {
   try {
-    const response = await adminApp
-      .auth()
-      .verifyIdToken(req.headers.authorization);
+    const user = res.locals.user;
 
-    res.json(await getQuizzesByEmail(response.email, converter));
+    res.json(await getQuizzesByEmail(user.email, listConverter));
   } catch (err) {
-    console.error(`Error while getting programming languages`, err.message);
+    next(err);
+  }
+};
+
+const createConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
+  toFirestore: (data) => {
+    const id =  generatePermalinkId();
+    console.log(id);
+    return {
+      ...data,
+      permalinkId: id,
+      createdAt: Timestamp.fromDate(new Date()),
+    };
+  },
+  fromFirestore: (snapshot) => snapshot.data() as Quiz,
+};
+
+export const create: RequestHandler = async (req, res, next) => {
+  try {
+    const user = res.locals.user;
+    const quiz = req.body as Quiz;
+
+    const response = await createQuiz(user.email, quiz, createConverter);
+    res.json(response);
+  } catch (err) {
     next(err);
   }
 };

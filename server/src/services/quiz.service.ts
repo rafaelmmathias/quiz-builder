@@ -1,16 +1,24 @@
 import { Quiz } from "../models/quiz";
 import { firestoreAdmin } from "../server";
+import { CreateQuiz, GetQuizzesByEmail } from "./quiz.service.types";
 
-type GetQuizzesByEmail<T> = (
-  email: string,
-  converter: FirebaseFirestore.FirestoreDataConverter<T>
-) => Promise<T>;
-
-export const getQuizzesByEmail: GetQuizzesByEmail<Quiz> = async (
+export const getQuizzesByEmail: GetQuizzesByEmail = async (
   email,
   converter
 ) => {
-  const colref = firestoreAdmin.collection("quiz").withConverter(converter);
-  const document = colref.doc(email);
-  return await (await document.get()).data();
+  const collection = firestoreAdmin.collection(email).orderBy('createdAt', 'desc').withConverter(converter);
+  const quizzes = await collection.get();
+
+  const response: Quiz[] = [];
+  quizzes.forEach((doc) => {
+    response.push(doc.data() as Quiz);
+  });
+  
+  return response;
+};
+
+export const createQuiz: CreateQuiz = async (email, quiz, converter) => {
+  await firestoreAdmin.collection(email).withConverter(converter).add(quiz);
+
+  return await getQuizzesByEmail(email);
 };

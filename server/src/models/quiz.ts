@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase-admin/firestore";
+
 export type Choice = {
   title: string;
   isCorrect?: boolean;
@@ -6,6 +8,9 @@ export type Choice = {
 export type Quiz = {
   id: string;
   title: string;
-  type: "single" | "multi";
   choices: Choice[];
+  published: boolean;
+  permalinkId: string;
+  type: "single" | "multi";
+  createdAt: Timestamp | Date;
 };
