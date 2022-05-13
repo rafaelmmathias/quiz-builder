@@ -1,3 +1,4 @@
+import { Quiz } from "../models/quiz";
 import {
   ForbiddenException,
   QuizAlreadyPublishedException,
@@ -8,6 +9,7 @@ import { firestoreAdmin } from "../server";
 import {
   CheckAnswer,
   CreateQuiz,
+  DeleteQuiz,
   GetQuizByPermalinkId,
   GetQuizzesByEmail,
   QuizResult,
@@ -70,7 +72,9 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
       .doc(quizToUpdate.id)
       .update(quiz);
 
-    return await getQuizByPermalinkId(permalinkId);
+    return (
+      await firestoreAdmin.collection("quizzes").doc(quizToUpdate.id).get()
+    ).data() as Quiz;
   }
 
   throw QuizAlreadyPublishedException;
@@ -79,7 +83,7 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
 export const checkAnswers: CheckAnswer = async (quizAnswer) => {
   const quiz = await getQuizByPermalinkId(quizAnswer.permalinkId);
   if (!quiz) throw QuizNotFoundException;
-  if (!quiz.published) throw ForbiddenException;
+  if (!quiz.published) return null;
 
   const result = quizAnswer.answers.reduce(
     (acc, curr) => {
@@ -87,12 +91,17 @@ export const checkAnswers: CheckAnswer = async (quizAnswer) => {
         (question) => question.id === curr.id
       );
       if (question) {
-        const isValidAnswer = question.choices
+        const isValidAnswerMult = question.choices
           .filter((choice) => choice.isCorrect)
           .every((choice) => curr.choices.includes(choice.title));
 
-        acc.correct = isValidAnswer ? acc.correct + 1 : acc.correct;
-        acc.wrong = !isValidAnswer ? acc.wrong + 1 : acc.wrong;
+        const isValidAnswerSing = curr.choices.every((choice) =>
+          question.choices.some((x) => x.title === choice && x.isCorrect)
+        );
+        
+        const a = (question.type === 'multi' ? isValidAnswerMult : isValidAnswerSing) && curr.choices.length > 0;
+        acc.correct = a ? acc.correct + 1 : acc.correct;
+        acc.wrong = !a ? acc.wrong + 1 : acc.wrong;
         return acc;
       }
 
@@ -105,4 +114,18 @@ export const checkAnswers: CheckAnswer = async (quizAnswer) => {
   );
 
   return result;
+};
+
+export const deleteQuiz: DeleteQuiz = async (permalinkId) => {
+  const response = await firestoreAdmin
+    .collection("quizzes")
+    .where("permalinkId", "==", permalinkId)
+    .get();
+
+  if (response.docs.length > 0) {
+    const quiz = response.docs[0];
+    await quiz.ref.delete();
+  } else {
+    throw QuizNotFoundException;
+  }
 };

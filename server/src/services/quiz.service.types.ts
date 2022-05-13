@@ -25,7 +25,7 @@ export type UpdateQuiz = (
 
 type QuestionAnswer = {
   id: string;
-  choices: string;
+  choices: string[];
 };
 
 export type QuizAnswer = {
@@ -39,3 +39,4 @@ export type QuizResult = {
 };
 
 export type CheckAnswer = (answer: QuizAnswer) => Promise<QuizResult>;
+export type DeleteQuiz = (permalinkId: string) => Promise<void>;

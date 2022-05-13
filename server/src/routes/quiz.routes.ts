@@ -1,4 +1,9 @@
-import { getQuiz, getQuizResult, updateQuizController } from "./../controllers/quiz.controller";
+import {
+  deleteQuizController,
+  getQuiz,
+  getQuizResult,
+  updateQuizController,
+} from "./../controllers/quiz.controller";
 import express from "express";
 import { authorize } from "../middlewares/authorize";
 import { create, get } from "../controllers/quiz.controller";
@@ -10,3 +15,4 @@ quizRouter.get("/quiz/:permalinkId", getQuiz);
 quizRouter.put("/quiz/:permalinkId", authorize, updateQuizController);
 quizRouter.post("/quiz", authorize, create);
 quizRouter.post("/quiz/checkResult", getQuizResult);
+quizRouter.delete("/quiz/:permalinkId", authorize, deleteQuizController);
