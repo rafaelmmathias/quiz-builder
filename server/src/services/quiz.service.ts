@@ -1,13 +1,12 @@
 import { Quiz } from "../models/quiz";
 import {
-  ForbiddenException,
   QuizAlreadyPublishedException,
   QuizNotFoundException,
 } from "../models/errors";
 
 import { firestoreAdmin } from "../server";
 import {
-  CheckAnswer,
+  QuizResultHandler,
   CreateQuiz,
   DeleteQuiz,
   GetQuizByPermalinkId,
@@ -62,11 +61,13 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
     .collection("quizzes")
     .where("createdBy", "==", email)
     .where("permalinkId", "==", permalinkId)
-    .where("published", "==", false)
     .get();
 
   if (collection.docs.length === 1) {
     const quizToUpdate = collection.docs[0];
+    const quizData = quizToUpdate.data() as Quiz;
+    if (quizData.published) throw QuizAlreadyPublishedException;
+
     await firestoreAdmin
       .collection("quizzes")
       .doc(quizToUpdate.id)
@@ -75,12 +76,12 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
     return (
       await firestoreAdmin.collection("quizzes").doc(quizToUpdate.id).get()
     ).data() as Quiz;
+  } else {
+    throw QuizNotFoundException;
   }
-
-  throw QuizAlreadyPublishedException;
 };
 
-export const checkAnswers: CheckAnswer = async (quizAnswer) => {
+export const getQuizResult: QuizResultHandler = async (quizAnswer) => {
   const quiz = await getQuizByPermalinkId(quizAnswer.permalinkId);
   if (!quiz) throw QuizNotFoundException;
   if (!quiz.published) return null;
@@ -98,10 +99,12 @@ export const checkAnswers: CheckAnswer = async (quizAnswer) => {
         const isValidAnswerSing = curr.choices.every((choice) =>
           question.choices.some((x) => x.title === choice && x.isCorrect)
         );
-        
-        const a = (question.type === 'multi' ? isValidAnswerMult : isValidAnswerSing) && curr.choices.length > 0;
-        acc.correct = a ? acc.correct + 1 : acc.correct;
-        acc.wrong = !a ? acc.wrong + 1 : acc.wrong;
+
+        const isValidAnswers =
+          (question.type === "multi" ? isValidAnswerMult : isValidAnswerSing) &&
+          curr.choices.length > 0;
+        acc.correct = isValidAnswers ? acc.correct + 1 : acc.correct;
+        acc.wrong = !isValidAnswers ? acc.wrong + 1 : acc.wrong;
         return acc;
       }
 

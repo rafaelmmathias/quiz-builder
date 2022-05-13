@@ -38,5 +38,5 @@ export type QuizResult = {
   wrong: number;
 };
 
-export type CheckAnswer = (answer: QuizAnswer) => Promise<QuizResult>;
+export type QuizResultHandler = (answer: QuizAnswer) => Promise<QuizResult>;
 export type DeleteQuiz = (permalinkId: string) => Promise<void>;

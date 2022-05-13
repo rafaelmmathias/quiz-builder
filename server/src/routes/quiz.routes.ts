@@ -1,7 +1,7 @@
 import {
   deleteQuizController,
   getQuiz,
-  getQuizResult,
+  getQuizResultController,
   updateQuizController,
 } from "./../controllers/quiz.controller";
 import express from "express";
@@ -10,9 +10,10 @@ import { create, get } from "../controllers/quiz.controller";
 
 export const quizRouter = express.Router();
 
-quizRouter.get("/quiz", authorize, get);
 quizRouter.get("/quiz/:permalinkId", getQuiz);
-quizRouter.put("/quiz/:permalinkId", authorize, updateQuizController);
+quizRouter.post("/quiz/getQuizResult", getQuizResultController);
+
+quizRouter.get("/quiz", authorize, get);
 quizRouter.post("/quiz", authorize, create);
-quizRouter.post("/quiz/checkResult", getQuizResult);
+quizRouter.put("/quiz/:permalinkId", authorize, updateQuizController);
 quizRouter.delete("/quiz/:permalinkId", authorize, deleteQuizController);

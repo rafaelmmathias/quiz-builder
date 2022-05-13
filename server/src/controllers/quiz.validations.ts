@@ -29,7 +29,7 @@ export const quizSchema = object({
 
             const predicateMulti = function (list: any) {
               const truthy = list.filter((x: any) => x.isCorrect).length;
-              return truthy > 1 && truthy < list.length;
+              return truthy >= 1 && truthy <= list.length;
             };
 
             return schema.test(

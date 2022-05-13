@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import { pick } from "lodash";
 import { Quiz } from "../models/quiz";
 import {
-  checkAnswers,
+  getQuizResult,
   createQuiz,
   deleteQuiz,
   getQuizByPermalinkId,
@@ -128,11 +128,11 @@ export const updateQuizController: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getQuizResult: RequestHandler = async (req, res, next) => {
+export const getQuizResultController: RequestHandler = async (req, res, next) => {
   try {
     const quizAnswer = req.body as QuizAnswer;
 
-    const response = await checkAnswers(quizAnswer);
+    const response = await getQuizResult(quizAnswer);
 
     if (!response) {
       throw QuizNotFoundException;
