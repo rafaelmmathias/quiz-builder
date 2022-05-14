@@ -53,10 +53,10 @@ export const createQuiz: CreateQuiz = async (email, quiz, converter) => {
   quiz.createdBy = email;
   await firestoreAdmin.collection("quizzes").withConverter(converter).add(quiz);
 
-  return await getQuizzesByEmail(email);
+  return await getQuizzesByEmail(email, converter);
 };
 
-export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
+export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz, converter) => {
   const collection = await firestoreAdmin
     .collection("quizzes")
     .where("createdBy", "==", email)
@@ -67,11 +67,11 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz) => {
     const quizToUpdate = collection.docs[0];
     const quizData = quizToUpdate.data() as Quiz;
     if (quizData.published) throw QuizAlreadyPublishedException;
-
+  
     await firestoreAdmin
-      .collection("quizzes")
+      .collection("quizzes").withConverter(converter)
       .doc(quizToUpdate.id)
-      .update(quiz);
+      .set(quiz);
 
     return (
       await firestoreAdmin.collection("quizzes").doc(quizToUpdate.id).get()

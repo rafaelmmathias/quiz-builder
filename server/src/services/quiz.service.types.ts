@@ -20,7 +20,8 @@ export type GetQuizByPermalinkId = (
 export type UpdateQuiz = (
   email: string,
   permalinkId: string,
-  quiz: Quiz
+  quiz: Quiz,
+  converter?: FirebaseFirestore.FirestoreDataConverter<Quiz>
 ) => Promise<Quiz>;
 
 type QuestionAnswer = {

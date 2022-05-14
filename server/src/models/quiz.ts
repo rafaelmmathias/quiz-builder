@@ -16,7 +16,7 @@ export type Quiz = {
   title: string;
   published: boolean;
   permalinkId: string;
-  createdAt: Timestamp | Date | string;
-  createdBy: string;
+  createdAt?: Timestamp | Date | string;
+  createdBy?: string;
   questions: Question[];
 };

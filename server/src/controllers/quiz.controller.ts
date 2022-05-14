@@ -15,23 +15,27 @@ import { QuizNotFoundException } from "../models/errors";
 import { QuizAnswer } from "../services/quiz.service.types";
 import { quizSchema } from "./quiz.validations";
 
+const fromFirestoreConverter = (
+  snapshot: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
+) => {
+  const data = snapshot.data() as Quiz;
+  const typeOfDate = typeof data.createdAt;
+  const date =
+    typeOfDate === "string"
+      ? Timestamp.fromDate(new Date(data.createdAt as string))
+      : (data.createdAt as Timestamp);
+
+  return {
+    ...data,
+    createdAt: date.toDate(),
+  };
+};
+
 const listConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
     return data;
   },
-  fromFirestore: (snapshot) => {
-    const data = snapshot.data() as Quiz;
-    const typeOfDate = typeof data.createdAt;
-    const date =
-      typeOfDate === "string"
-        ? Timestamp.fromDate(new Date(data.createdAt as string))
-        : (data.createdAt as Timestamp);
-
-    return {
-      ...data,
-      createdAt: date.toDate(),
-    };
-  },
+  fromFirestore: fromFirestoreConverter,
 };
 
 export const get: RequestHandler = async (req, res, next) => {
@@ -47,18 +51,17 @@ export const get: RequestHandler = async (req, res, next) => {
 const createConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
     const id = generatePermalinkId();
-
     return {
       ...data,
-      permalinkId: id,
-      createdAt: Timestamp.fromDate(new Date()),
+      permalinkId: data.permalinkId || id,
+      createdAt: data.createdAt || Timestamp.fromDate(new Date()),
       questions: data.questions.map((question) => ({
         ...question,
-        id: generatePermalinkId(),
+        id: question.id || generatePermalinkId(),
       })),
     } as Quiz;
   },
-  fromFirestore: (snapshot) => snapshot.data() as Quiz,
+  fromFirestore: fromFirestoreConverter,
 };
 
 export const create: RequestHandler = async (req, res, next) => {
@@ -81,7 +84,10 @@ const getQuizConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   fromFirestore: (snapshot) => {
     const data = snapshot.data() as Quiz;
     const typeOfDate = typeof data.createdAt;
-    const date = typeOfDate === 'string' ? Timestamp.fromDate(new Date(data.createdAt as string)) : data.createdAt as Timestamp;
+    const date =
+      typeOfDate === "string"
+        ? Timestamp.fromDate(new Date(data.createdAt as string))
+        : (data.createdAt as Timestamp);
 
     return {
       ...data,
@@ -116,7 +122,12 @@ export const updateQuizController: RequestHandler = async (req, res, next) => {
     const user = res.locals.user;
     const quiz = req.body as Quiz;
 
-    const response = await updateQuiz(user.email, req.params.permalinkId, quiz);
+    const response = await updateQuiz(
+      user.email,
+      req.params.permalinkId,
+      quiz,
+      createConverter
+    );
 
     if (!response) {
       throw QuizNotFoundException;
@@ -128,7 +139,11 @@ export const updateQuizController: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getQuizResultController: RequestHandler = async (req, res, next) => {
+export const getQuizResultController: RequestHandler = async (
+  req,
+  res,
+  next
+) => {
   try {
     const quizAnswer = req.body as QuizAnswer;
 
@@ -146,9 +161,11 @@ export const getQuizResultController: RequestHandler = async (req, res, next) =>
 
 export const deleteQuizController: RequestHandler = async (req, res, next) => {
   try {
+    const user = res.locals.user;
     await deleteQuiz(req.params.permalinkId);
+    const updatedList = await getQuizzesByEmail(user.email, getQuizConverter);
 
-    res.json("deleted");
+    res.json(updatedList);
   } catch (err) {
     next(err);
   }

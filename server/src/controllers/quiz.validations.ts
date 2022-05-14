@@ -24,11 +24,11 @@ export const quizSchema = object({
           )
           .when("type", (type, schema: any) => {
             const predicateSingle = function (list: any) {
-              return list.filter((x: any) => x.isCorrect).length === 1;
+              return list && list.filter((x: any) => x.isCorrect).length === 1;
             };
 
             const predicateMulti = function (list: any) {
-              const truthy = list.filter((x: any) => x.isCorrect).length;
+              const truthy = list && list.filter((x: any) => x.isCorrect).length;
               return truthy >= 1 && truthy <= list.length;
             };
 

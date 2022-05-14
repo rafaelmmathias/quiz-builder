@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthRoutes } from "../features/auth/routes";
 import { QuizRoutes } from "../features/quiz/routes";
 import { SessionLoader } from "../components";
+import { NotFound } from "../layout";
 
 export const AppRouter = () => {
   const { onValidateSession, isFetchingUser } = useAuthStore();
@@ -22,6 +23,7 @@ export const AppRouter = () => {
       <Route index element={<Navigate to={"/quiz"} />} />
       <Route path="/auth/*" element={<AuthRoutes />} />
       <Route path="/quiz/*" element={<QuizRoutes />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

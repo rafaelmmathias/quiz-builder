@@ -3,15 +3,28 @@ export type Choice = {
   isCorrect?: boolean;
 };
 
-export type Quiz = {
-  id: string;
+export type Question = {
+  id?: string;
   title: string;
-  type: "single" | "multi";
-  published: boolean;
   choices: Choice[];
+  type: "single" | "multi";
+};
+
+export type Quiz = {
+  title: string;
+  published?: boolean;
+  permalinkId: string;
+  createdAt: string;
+  questions: Question[];
 };
 
 export type QuizStore = {
+  isFetchingList: boolean;
+  actionLoading: boolean;
+  actionError: string;
   quizzes: Quiz[];
   fetch: () => void;
+  delete: (quiz: Quiz) => Promise<void>;
+  create: (quiz: Quiz) => Promise<void>;
+  update: (quiz: Quiz) => Promise<void>;
 };
