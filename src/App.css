@@ -1,1 +1,5 @@
 @import '~antd/dist/antd.css';
+
+.-item-explain-error {
+    color: #ff4d4f
+}

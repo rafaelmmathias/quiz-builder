@@ -1,7 +1,7 @@
 import { createQuiz, deleteQuiz, getQuizzes, updateQuiz } from "./../api/quiz";
 import create from "zustand";
 import { QuizStore } from "../types";
-import { message, Button } from "antd";
+import { message } from "antd";
 
 export const useQuizStore = create<QuizStore>((set, get) => ({
   isFetchingList: false,
@@ -36,14 +36,25 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     }
   },
   create: async (quiz) => {
+    set({
+      actionLoading: true,
+    });
     const response = await createQuiz(quiz);
     set({
       quizzes: response,
+      actionLoading: false,
     });
     message.success("Quiz successfully created.");
   },
   update: async (quiz) => {
+    set({
+      actionLoading: true,
+    });
     await updateQuiz(quiz);
+    set({
+      actionLoading: false,
+    });
+
     message.success("Quiz successfully updated.");
   },
 }));

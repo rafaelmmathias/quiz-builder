@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { DeleteFilled, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   Select,
@@ -7,6 +7,8 @@ import {
   Col,
   Row,
   Divider,
+  Card,
+  Space,
 } from "antd";
 import ErrorList from "antd/lib/form/ErrorList";
 import React from "react";
@@ -15,7 +17,6 @@ import { Choice } from "./choice-form.component";
 interface QuestionFormProps {}
 
 export const QuestionForm: React.FC<QuestionFormProps> = () => {
-
   return (
     <Col>
       <Form.List
@@ -40,54 +41,89 @@ export const QuestionForm: React.FC<QuestionFormProps> = () => {
         {(fields, { remove, add }, { errors }) => {
           return (
             <>
-              {fields.map((field, index) => (
-                <Col key={field.key}>
-                  <Divider orientation="left">Question {index + 1}</Divider>
-                  <Row gutter={8}>
-                    <Col span={4}>
-                      <Form.Item
-                        label="Type"
-                        name={[index, "type"]}
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please select the question type!",
-                          },
-                        ]}
-                      >
-                        <Select>
-                          <Select.Option value="single">Single</Select.Option>
-                          <Select.Option value="multi">Multiple</Select.Option>
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                    <Col span={20}>
-                      <Form.Item
-                        name={[index, "title"]}
-                        label={"Question"}
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input the question!",
-                          },
-                        ]}
-                      >
-                        <Input />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                  <Row gutter={8}>
-                    <Choice index={index} />
-                  </Row>
-                  <Button onClick={() => remove(field.name)}>
-                    Remove question
-                  </Button>
-                </Col>
-              ))}
-              <Form.Item>
-                <Button onClick={() => add()}>
-                  <PlusOutlined /> Add question
+              <Divider orientation="center" dashed>
+                <Button onClick={() => add(null, 0)} type="dashed">
+                  {" "}
+                  <PlusOutlined /> Add Question
                 </Button>
+              </Divider>
+
+              <Space
+                direction="vertical"
+                size="middle"
+                style={{ display: "flex" }}
+              >
+                {fields.map((field, index) => (
+                  <>
+                    <Divider />
+                    <Card
+                      size="small"
+                      type="inner"
+                      title={`Question ${index + 1}`}
+                      extra={
+                        <Button
+                          onClick={() => remove(field.name)}
+                          danger
+                          type="primary"
+                          icon={<DeleteFilled />}
+                        ></Button>
+                      }
+                    >
+                      <Col key={field.key}>
+                        <Row gutter={8}>
+                          <Col span={4}>
+                            <Form.Item
+                              label="Type"
+                              name={[index, "type"]}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Select the type!",
+                                },
+                              ]}
+                            >
+                              <Select>
+                                <Select.Option value="single">
+                                  Single
+                                </Select.Option>
+                                <Select.Option value="multi">
+                                  Multiple
+                                </Select.Option>
+                              </Select>
+                            </Form.Item>
+                          </Col>
+                          <Col span={20}>
+                            <Form.Item
+                              name={[index, "title"]}
+                              label={"Question"}
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please input the question!",
+                                },
+                              ]}
+                            >
+                              <Input />
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                        {/* <Row> */}
+                        <Choice index={index} />
+                        {/* </Row> */}
+                      </Col>
+                    </Card>
+                  </>
+                ))}
+              </Space>
+              {fields.length > 0 && (
+                <Divider orientation="center" dashed>
+                  <Button onClick={() => add()} type="dashed">
+                    {" "}
+                    <PlusOutlined /> Add Question
+                  </Button>
+                </Divider>
+              )}
+              <Form.Item>
                 <ErrorList errors={errors} />
               </Form.Item>
             </>

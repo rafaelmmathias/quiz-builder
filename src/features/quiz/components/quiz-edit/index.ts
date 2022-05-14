@@ -1,1 +1,1 @@
-export * from "./quiz-edit";
+export * from "./quiz-edit.component";

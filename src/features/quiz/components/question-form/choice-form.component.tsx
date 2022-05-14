@@ -1,12 +1,5 @@
-import {
-  Button,
-  Input,
-  Form,
-  Col,
-  Row,
-  Divider,
-  Switch,
-} from "antd";
+import { DeleteFilled, PlusOutlined } from "@ant-design/icons";
+import { Button, Input, Form, Col, Row, Divider, Switch } from "antd";
 import ErrorList from "antd/lib/form/ErrorList";
 import React from "react";
 import { Question } from "../../types";
@@ -23,8 +16,7 @@ export const Choice: React.FC<ChoiceProps> = ({ index }) => {
         name={[index, "choices"]}
         rules={[
           {
-            validator: async (_, value, error) => {
-              console.log(value)
+            validator: async (_, value) => {
               const question = form.getFieldValue([
                 "questions",
                 index,
@@ -36,7 +28,10 @@ export const Choice: React.FC<ChoiceProps> = ({ index }) => {
                 );
               }
 
-              if (Array.isArray(value) && value.filter((value)=>value).length > 0) {
+              if (
+                Array.isArray(value) &&
+                value.filter((value) => value).length > 0
+              ) {
                 const correctChoices = value.filter(
                   (choice) => choice && choice.isCorrect
                 ).length;
@@ -65,44 +60,63 @@ export const Choice: React.FC<ChoiceProps> = ({ index }) => {
       >
         {(fields, { add, remove }, { errors }) => (
           <>
-            {fields.map(({ key, name, ...restField }) => (
+            {fields.length > 0 && (
+              <Divider orientation="center" dashed>
+                Options
+              </Divider>
+            )}
+            {fields.map(({ key, name, ...restField }, index) => (
               <>
-                <Divider />
-                <Col span={22}>
-                  <Form.Item
-                    {...restField}
-                    name={[name, "title"]}
-                    label={"Answer"}
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input the answer description!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={2}>
-                  <Row justify="center">
+                <Row  align="middle">
+                  <Col span={21}>
                     <Form.Item
-                      label="Correct"
-                      valuePropName="checked"
-                      name={[name, "isCorrect"]}
-                      initialValue={false}
+                      {...restField}
+                      name={[name, "title"]}
+                      label={"Answer"}
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input the answer description!",
+                        },
+                      ]}
                     >
-                      <Switch />
+                      <Input />
                     </Form.Item>
-                  </Row>
-                </Col>
-
-                <Row>
-                  <Button onClick={() => remove(name)}>Remove</Button>
+                  </Col>
+                  <Col span={2}>
+                    <Row justify="center">
+                      <Form.Item
+                        label="Correct"
+                        valuePropName="checked"
+                        name={[name, "isCorrect"]}
+                        initialValue={false}
+                      >
+                        <Switch />
+                      </Form.Item>
+                    </Row>
+                  </Col>
+                  <Col span={1}>
+                    <Row justify="center">
+                      <Button
+                        onClick={() => remove(index)}
+                        type="primary"
+                        danger
+                        icon={<DeleteFilled />}
+                      />
+                    </Row>
+                  </Col>
                 </Row>
               </>
             ))}
-            <ErrorList errors={errors} />
-            <Button onClick={() => add()}>Add Choice</Button>
+            <Divider orientation="center" dashed>
+              <Button onClick={() => add()} type="dashed">
+                {" "}
+                <PlusOutlined /> Add Option
+              </Button>
+            </Divider>
+            <Form.Item>
+              <ErrorList errors={errors} />
+            </Form.Item>
           </>
         )}
       </Form.List>
