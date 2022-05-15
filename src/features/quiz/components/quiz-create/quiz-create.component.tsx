@@ -10,7 +10,7 @@ export const QuizCreate = () => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate(-1);
+    navigate("/quiz");
   };
 
   const createHandler = async (quiz: Quiz) => {

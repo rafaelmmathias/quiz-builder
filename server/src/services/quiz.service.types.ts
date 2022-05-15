@@ -1,4 +1,3 @@
-import { string } from "yup";
 import { Quiz } from "../models/quiz";
 
 export type GetQuizzesByEmail = (
@@ -24,7 +23,7 @@ export type UpdateQuiz = (
   converter?: FirebaseFirestore.FirestoreDataConverter<Quiz>
 ) => Promise<Quiz>;
 
-type QuestionAnswer = {
+export type QuestionAnswer = {
   id: string;
   choices: string[];
 };
@@ -36,7 +35,6 @@ export type QuizAnswer = {
 
 export type QuizResult = {
   correct: number;
-  wrong: number;
 };
 
 export type QuizResultHandler = (answer: QuizAnswer) => Promise<QuizResult>;

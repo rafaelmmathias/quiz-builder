@@ -13,9 +13,9 @@ export const QuizList = () => {
   useEffect(() => {
     fetch();
   }, [fetch]);
-
   const columns = useQuizListColumns();
   const navigate = useNavigate();
+  
   return (
     <div>
       <Row justify="space-between">
@@ -25,7 +25,7 @@ export const QuizList = () => {
             <Button
               type="primary"
               onClick={() => {
-                navigate("/quiz/create");
+                navigate("create");
               }}
             >
               Create

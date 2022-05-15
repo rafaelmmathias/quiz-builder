@@ -1,8 +1,13 @@
 import { axios } from "../../../lib/axios";
+import { QuizResult } from "../stores/quiz-answer.store";
 import { Quiz } from "../types";
-import { DeleteQuizHandler } from "./quiz.types";
-type CreateQuizHandler = (quiz: Quiz) => Promise<Quiz[]>;
-type UpdateQuizHandler = (quiz: Quiz) => Promise<Quiz[]>;
+import {
+  CreateQuizHandler,
+  DeleteQuizHandler,
+  GetQuizHandler,
+  GetQuizResultHandler,
+  UpdateQuizHandler,
+} from "./quiz.types";
 
 export const createQuiz: CreateQuizHandler = async (quiz) => {
   const response = await axios.post<Quiz[]>("/quiz", quiz);
@@ -21,5 +26,15 @@ export const getQuizzes = async () => {
 
 export const deleteQuiz: DeleteQuizHandler = async (quiz) => {
   const response = await axios.delete(`/quiz/${quiz.permalinkId}`);
+  return response.data;
+};
+
+export const getQuiz: GetQuizHandler = async (id) => {
+  const response = await axios.get(`/quiz/${id}`);
+  return response.data;
+};
+
+export const getQuizResult: GetQuizResultHandler = async (answer) => {
+  const response = await axios.post<QuizResult>(`/quiz/getQuizResult`, answer);
   return response.data;
 };

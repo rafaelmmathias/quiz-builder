@@ -1,1 +1,1 @@
-export * from "./SessionLoader";
+export * from "./session-loader/session-loader.component";

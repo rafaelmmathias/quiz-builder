@@ -1,20 +1,46 @@
-import { NotFound } from "../../../layout/not-found";
+import { NotFound, PublicLayout } from "../../../layout";
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { QuizCreate, QuizList, QuizEdit } from "../components";
+import { QuizAnswer } from "../components/quiz-answer";
 import { PrivateRoute } from "../../../routes/private-route";
-import { QuizCreate } from "../components";
-import { QuizList } from "../components/quiz-list/quiz-list.component";
-import { QuizEdit } from "../components/quiz-edit";
 
 export const QuizRoutes = () => {
   return (
-    <PrivateRoute>
-      <Routes>
-        <Route path="/create" element={<QuizCreate />} />
-        <Route path="/edit" element={<QuizEdit />} />
-        <Route index element={<QuizList />} />
-        <Route path="/*" element={<NotFound />} />
-      </Routes>
-    </PrivateRoute>
+    <Routes>
+      <Route
+        path="/create"
+        element={
+          <PrivateRoute>
+            <QuizCreate />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/edit"
+        element={
+          <PrivateRoute>
+            <QuizEdit />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        index
+        element={
+          <PrivateRoute>
+            <QuizList />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/answer/:id"
+        element={
+          <PublicLayout>
+            <QuizAnswer />
+          </PublicLayout>
+        }
+      />
+      <Route path="/*" element={<NotFound />} />
+    </Routes>
   );
 };

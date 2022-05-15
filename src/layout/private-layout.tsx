@@ -71,7 +71,7 @@ export const PrivateLayout: React.FC<PrivateLayoutProps> = ({ children }) => {
         {children}
       </Content>
       <Footer style={{ textAlign: "center" }}>
-        Ant Design ©2018 Created by Ant UED
+        Quiz Builder - Created by Rafael Mathias
       </Footer>
     </Layout>
   );

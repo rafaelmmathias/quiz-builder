@@ -1,6 +1,11 @@
-import { DeleteRowOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Popconfirm, Row, Space } from "antd";
-import React from "react";
+import { APP_URL } from "../../../../config";
+import {
+  CopyOutlined,
+  DeleteRowOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+import { Button, Popconfirm, Row, Space, Typography } from "antd";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuizStore } from "../../stores/quiz.store";
 import { Quiz } from "../../types";
@@ -19,9 +24,24 @@ export const QuizTableActions: React.FC<QuizListActionsProps> = ({ quiz }) => {
     });
   };
 
+  const getPermalink = useCallback((id: string) => {
+    return `${APP_URL}/quiz/answer/${id}`;
+  }, []);
+
   return (
-    <Row justify="space-around">
+    <Row justify="end">
       <Space>
+        {quiz.published && (
+          <Typography.Paragraph
+            style={{ margin: 0 }}
+            copyable={{
+              text: getPermalink(quiz.permalinkId),
+              icon: <Button type="primary" icon={<CopyOutlined />}></Button>,
+              tooltips: "Copy link to share the Quiz",
+            }}
+          ></Typography.Paragraph>
+        )}
+
         <Button
           type="primary"
           disabled={quiz.published}

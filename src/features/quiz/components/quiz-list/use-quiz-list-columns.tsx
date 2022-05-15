@@ -1,55 +1,61 @@
-import { Tag } from "antd";
+import { Badge, Row, Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { format } from "date-fns";
-import { useMemo } from "react";
 import { Quiz } from "../../types";
 import { QuizTableActions } from ".";
 
 export const useQuizListColumns = () => {
-  return useMemo(
-    () =>
-      [
-        {
-          title: "Title",
-          dataIndex: "title",
-          key: "title",
-        },
-        {
-          title: "Questions",
-          dataIndex: "questions",
-          key: "questions",
-          render: (questions) => <div>{questions.length}</div>,
-        },
-        {
-          title: "Created at",
-          dataIndex: "createdAt",
-          key: "createdAt",
-          render: (createdAt) => (
-            <div>{format(new Date(createdAt), "mm/dd/yyyy HH:MM")}</div>
-          ),
-        },
-        {
-          title: "Status",
-          dataIndex: "published",
-          key: "published",
-          render: (published) => (
-            <div>
-              {
-                <Tag color={published ? "green" : "volcano"}>
-                  {published ? "published" : "not published"}
-                </Tag>
-              }
-            </div>
-          ),
-        },
-        {
-          title: "Actions",
-          dataIndex: "",
-          key: "",
-          width:200,
-          render: (value, quiz) => <QuizTableActions quiz={quiz} />,
-        },
-      ] as ColumnsType<Quiz>,
-    []
-  );
+  return [
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+    },
+    {
+      title: "Created at",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      width: 150,
+      render: (createdAt) => (
+        <div>{format(new Date(createdAt), "MM/dd/yyyy HH:mm")}</div>
+      ),
+    },
+    {
+      title: "Questions",
+      dataIndex: "questions",
+      key: "questions",
+      width: 100,
+      render: (questions) => (
+        <Row justify="center">
+          <Badge
+            count={questions.length}
+            style={{ backgroundColor: "#108ee9" }}
+          />
+        </Row>
+      ),
+    },
+
+    {
+      title: "Status",
+      dataIndex: "published",
+      key: "published",
+      width: 100,
+      render: (published, quiz) => (
+        <Row justify="center">
+          {
+            <Tag color={published ? "green" : "volcano"}>
+              {published ? "published" : "not published"}
+            </Tag>
+          }
+        </Row>
+      ),
+    },
+    {
+      title: "Actions",
+      dataIndex: "",
+      key: "",
+      width: 200,
+      render: (value, quiz) => <QuizTableActions quiz={quiz} />,
+    },
+  ] as ColumnsType<Quiz>;
 };

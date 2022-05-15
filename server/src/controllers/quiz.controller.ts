@@ -51,10 +51,12 @@ export const get: RequestHandler = async (req, res, next) => {
 const createConverter: FirebaseFirestore.FirestoreDataConverter<Quiz> = {
   toFirestore: (data) => {
     const id = generatePermalinkId();
+    const createdAt = new Date(data.createdAt as string || new Date());
+    
     return {
       ...data,
       permalinkId: data.permalinkId || id,
-      createdAt: data.createdAt || Timestamp.fromDate(new Date()),
+      createdAt: Timestamp.fromDate(createdAt),
       questions: data.questions.map((question) => ({
         ...question,
         id: question.id || generatePermalinkId(),

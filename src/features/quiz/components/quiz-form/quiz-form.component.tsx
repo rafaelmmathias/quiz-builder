@@ -37,7 +37,7 @@ export const QuizForm: React.FC<QuizFormProps> = ({
                   <Input />
                 </Form.Item>
                 <Row>
-                  <Col span={22}>
+                  <Col span={20}>
                     <Form.Item
                       label="Title"
                       name="title"
@@ -51,7 +51,7 @@ export const QuizForm: React.FC<QuizFormProps> = ({
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col span={2}>
+                  <Col span={4}>
                     <Row justify="center">
                       <Form.Item
                         name="published"

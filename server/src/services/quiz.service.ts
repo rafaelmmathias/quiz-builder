@@ -11,9 +11,9 @@ import {
   DeleteQuiz,
   GetQuizByPermalinkId,
   GetQuizzesByEmail,
-  QuizResult,
   UpdateQuiz,
 } from "./quiz.service.types";
+import { getCorrectAnswers } from "../utils";
 
 export const getQuizzesByEmail: GetQuizzesByEmail = async (
   email,
@@ -56,7 +56,12 @@ export const createQuiz: CreateQuiz = async (email, quiz, converter) => {
   return await getQuizzesByEmail(email, converter);
 };
 
-export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz, converter) => {
+export const updateQuiz: UpdateQuiz = async (
+  email,
+  permalinkId,
+  quiz,
+  converter
+) => {
   const collection = await firestoreAdmin
     .collection("quizzes")
     .where("createdBy", "==", email)
@@ -67,9 +72,10 @@ export const updateQuiz: UpdateQuiz = async (email, permalinkId, quiz, converter
     const quizToUpdate = collection.docs[0];
     const quizData = quizToUpdate.data() as Quiz;
     if (quizData.published) throw QuizAlreadyPublishedException;
-  
+
     await firestoreAdmin
-      .collection("quizzes").withConverter(converter)
+      .collection("quizzes")
+      .withConverter(converter)
       .doc(quizToUpdate.id)
       .set(quiz);
 
@@ -86,37 +92,7 @@ export const getQuizResult: QuizResultHandler = async (quizAnswer) => {
   if (!quiz) throw QuizNotFoundException;
   if (!quiz.published) return null;
 
-  const result = quizAnswer.answers.reduce(
-    (acc, curr) => {
-      const question = quiz.questions.find(
-        (question) => question.id === curr.id
-      );
-      if (question) {
-        const isValidAnswerMult = question.choices
-          .filter((choice) => choice.isCorrect)
-          .every((choice) => curr.choices.includes(choice.title));
-
-        const isValidAnswerSing = curr.choices.every((choice) =>
-          question.choices.some((x) => x.title === choice && x.isCorrect)
-        );
-
-        const isValidAnswers =
-          (question.type === "multi" ? isValidAnswerMult : isValidAnswerSing) &&
-          curr.choices.length > 0;
-        acc.correct = isValidAnswers ? acc.correct + 1 : acc.correct;
-        acc.wrong = !isValidAnswers ? acc.wrong + 1 : acc.wrong;
-        return acc;
-      }
-
-      return acc;
-    },
-    {
-      correct: 0,
-      wrong: 0,
-    } as QuizResult
-  );
-
-  return result;
+  return getCorrectAnswers(quiz.questions, quizAnswer.answers);
 };
 
 export const deleteQuiz: DeleteQuiz = async (permalinkId) => {
