@@ -10,50 +10,47 @@ import {
   Card,
   Space,
 } from "antd";
+import { Rule } from "antd/lib/form";
 import ErrorList from "antd/lib/form/ErrorList";
-import React from "react";
+import React, { useMemo } from "react";
 import { Choice } from "./choice-form.component";
 
 interface QuestionFormProps {}
 
 export const QuestionForm: React.FC<QuestionFormProps> = () => {
+  const questionValidations = useMemo(
+    () =>
+      [
+        {
+          min: 1,
+          message: "At least 1 question must be added.",
+          type: "array",
+          required: true,
+        },
+        {
+          max: 10,
+          message: "Maximum of 10 questions.",
+          type: "array",
+          required: true,
+        },
+      ] as Rule[],
+    []
+  );
+
   return (
     <Col>
-      <Form.Item
-        name={"questions"}
-        rules={[
-          {
-            min: 1,
-            message: "At least 1 question must be added.",
-            type: "array",
-            required: true,
-          },
-          {
-            max: 10,
-            message: "Maximum of 10 questions.",
-            type: "array",
-            required: true,
-          },
-        ]}
-      >
+      <Form.Item name={"questions"} rules={questionValidations}>
         <Form.List name={"questions"}>
           {(fields, { remove, add }, { errors }) => {
             return (
               <>
-                <Divider orientation="center" dashed>
-                  <Button onClick={() => add(null, 0)} type="dashed">
-                    {" "}
-                    <PlusOutlined /> Add Question
-                  </Button>
-                </Divider>
-
                 <Space
                   direction="vertical"
                   size="middle"
                   style={{ display: "flex" }}
                 >
                   {fields.map((field, index) => (
-                    <>
+                    <div key={`question-${index}`}>
                       <Divider />
                       <Row justify="center">
                         <Col span={22}>
@@ -114,10 +111,10 @@ export const QuestionForm: React.FC<QuestionFormProps> = () => {
                           </Card>
                         </Col>
                       </Row>
-                    </>
+                    </div>
                   ))}
                 </Space>
-                {fields.length > 0 && (
+                {fields.length < 10 && (
                   <Divider orientation="center" dashed>
                     <Button onClick={() => add()} type="dashed">
                       {" "}

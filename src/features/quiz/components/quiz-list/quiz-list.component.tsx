@@ -15,7 +15,7 @@ export const QuizList = () => {
   }, [fetch]);
   const columns = useQuizListColumns();
   const navigate = useNavigate();
-  
+
   return (
     <div>
       <Row justify="space-between">
@@ -38,7 +38,11 @@ export const QuizList = () => {
         </Row>
       </Row>
       <Spin spinning={isFetchingList}>
-        <Table dataSource={quizzes} columns={columns} />
+        <Table
+          dataSource={quizzes}
+          columns={columns}
+          rowKey={(question) => question.permalinkId}
+        />
       </Spin>
     </div>
   );

@@ -19,13 +19,13 @@ export const Choice: React.FC<ChoiceProps> = ({ index }) => {
             min: 1,
             type: "array",
             required: true,
-            message: "At least 1 choice must be added.",
+            message: "At least 1 option must be added.",
           },
           {
             max: 5,
             type: "array",
             required: true,
-            message: "Maximum of 5 choices.",
+            message: "Maximum of 5 options.",
           },
         ]}
       >
@@ -56,7 +56,7 @@ export const Choice: React.FC<ChoiceProps> = ({ index }) => {
 
                   if (correctChoices < 1)
                     return Promise.reject(
-                      new Error("At least 1 correct choice must be selected.")
+                      new Error("At least 1 correct option must be selected.")
                     );
                 }
                 return Promise.resolve();
@@ -71,60 +71,68 @@ export const Choice: React.FC<ChoiceProps> = ({ index }) => {
                   Options
                 </Divider>
               )}
-              {fields.map(({ key, name, ...restField }, index) => (
-                <Row justify="center">
-                  <Col span={24}>
-                    <Row justify="center" align="middle">
-                      <Col span={21}>
-                        <Form.Item
-                          {...restField}
-                          name={[name, "title"]}
-                          label={"Answer"}
-                          rules={[
-                            {
-                              required: true,
-                              message: "Please input the answer description!",
-                            },
-                          ]}
-                        >
-                          <Input />
-                        </Form.Item>
-                      </Col>
-                      <Col span={2}>
-                        <Row justify="center">
+              {fields.map(({ key, name, ...restField }, index) => {
+                console.log(key, name, restField);
+                return (
+                  <Row justify="center" key={`question-option${index}`}>
+                    <Col span={24}>
+                      <Row justify="center" align="middle">
+                        <Col span={21}>
                           <Form.Item
-                            label="Correct"
-                            valuePropName="checked"
-                            name={[name, "isCorrect"]}
-                            initialValue={false}
+                            {...restField}
+                            name={[name, "title"]}
+                            label={"Answer"}
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please input the answer description!",
+                              },
+                            ]}
                           >
-                            <Switch />
+                            <Input />
                           </Form.Item>
-                        </Row>
-                      </Col>
-                      <Col span={1}>
-                        <Row justify="center">
-                          <Button
-                            onClick={() => remove(index)}
-                            type="primary"
-                            danger
-                            icon={<DeleteFilled />}
-                          />
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              ))}
-              <Divider orientation="center" dashed>
-                <Button onClick={() => add()} type="dashed">
-                  {" "}
-                  <PlusOutlined /> Add Option
-                </Button>
-              </Divider>
-              <Form.Item>
-                <ErrorList errors={errors} />
-              </Form.Item>
+                        </Col>
+                        <Col span={2}>
+                          <Row justify="center">
+                            <Form.Item
+                              {...restField}
+                              label="Correct"
+                              valuePropName="checked"
+                              name={[name, "isCorrect"]}
+                              initialValue={false}
+                            >
+                              <Switch />
+                            </Form.Item>
+                          </Row>
+                        </Col>
+                        <Col span={1}>
+                          <Row justify="center">
+                            <Button
+                              onClick={() => remove(index)}
+                              type="primary"
+                              danger
+                              icon={<DeleteFilled />}
+                            />
+                          </Row>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                );
+              })}
+              {fields.length < 5 && (
+                <Divider orientation="center" dashed>
+                  <Button onClick={() => add()} type="dashed">
+                    {" "}
+                    <PlusOutlined /> Add Option
+                  </Button>
+                </Divider>
+              )}
+              {errors.length > 0 && (
+                <Form.Item>
+                  <ErrorList errors={errors} />
+                </Form.Item>
+              )}
             </>
           )}
         </Form.List>

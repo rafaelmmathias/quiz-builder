@@ -25,7 +25,7 @@ export const QuizAnswer = () => {
             <Space direction="vertical">
               {quiz?.questions.map((question) => {
                 return (
-                  <Card type="inner" title={question.title}>
+                  <Card type="inner" title={question.title} key={`question-answer-${question.id}`}>
                     {question.type === "single" ? (
                       <Radio.Group
                         onChange={(value) => {
@@ -33,9 +33,9 @@ export const QuizAnswer = () => {
                         }}
                       >
                         <Space direction="vertical">
-                          {question.choices.map((choice) => {
+                          {question.choices.map((choice, index) => {
                             return (
-                              <Card type="inner" size="small">
+                              <Card type="inner" size="small" key={`choice-${index}`}>
                                 <Radio value={choice.title}>
                                   {choice.title}
                                 </Radio>
