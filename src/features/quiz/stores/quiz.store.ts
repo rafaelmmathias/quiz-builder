@@ -11,6 +11,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   fetch: async () => {
     set({
       isFetchingList: true,
+      quizzes: []
     });
     const response = await getQuizzes();
 
